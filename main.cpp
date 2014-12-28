@@ -1,8 +1,12 @@
 #include<allegro.h>
 #include<alpng.h>
 #include<time.h>
+#include<vector>
+
+using namespace std;
 
 BITMAP* buffer;
+BITMAP* cursor;
 
 bool close_button_pressed;
 
@@ -14,6 +18,16 @@ volatile int game_time = 0;
 int fps;
 int frames_done;
 int old_time;
+
+struct pixel{
+  int x;
+  int y;
+  int r;
+  int g;
+  int b;
+};
+
+vector<pixel> pixels;
 
 void ticker(){
   ticks++;
@@ -51,13 +65,24 @@ void abort_on_error(const char *message){
 }
 
 void update(){
+  if(mouse_b & 1){
+    pixel newPixel;
+    newPixel.x = mouse_x;
+    newPixel.y = mouse_y;
+    newPixel.b = 255;
 
-
-
+    pixels.push_back(newPixel);
+  }
 }
 
 void draw(){
 
+
+    rectfill(buffer,0,0,SCREEN_W,SCREEN_H,makecol(255,255,255));
+    for( int i = 0; i <pixels.size(); i++){
+        putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
+    }
+    draw_sprite(buffer,cursor,mouse_x,mouse_y);
     draw_sprite(screen,buffer,0,0);
 }
 
@@ -86,8 +111,8 @@ void setup(){
     LOCK_FUNCTION(close_button_handler);
     set_close_button_callback(close_button_handler);
 
-   // if (!(bmp = load_bitmap("bmp.png", NULL)))
-   //   abort_on_error("Cannot find image bmp.png\nPlease check your files and try again");
+   if (!(cursor = load_bitmap("cursor.png", NULL)))
+     abort_on_error("Cannot find image cursor.png\nPlease check your files and try again");
 }
 
 
@@ -110,7 +135,7 @@ int main(){
 
 
 
-  set_window_title("Sci-Fi game!");
+  set_window_title("Photostore");
   setup();
 
 

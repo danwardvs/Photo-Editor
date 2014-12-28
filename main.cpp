@@ -69,7 +69,9 @@ void update(){
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
-    newPixel.b = 255;
+    newPixel.b = 0;
+    newPixel.g = 0;
+    newPixel.r = 0;
 
     pixels.push_back(newPixel);
   }

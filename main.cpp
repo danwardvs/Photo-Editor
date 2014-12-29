@@ -62,6 +62,13 @@ int random(int newLowest, int newHighest)
   return randomNumber;
 }
 
+//Area clicked
+bool location_clicked(int min_x,int max_x,int min_y,int max_y){
+    if(mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && mouse_b & 1 || mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && joy[0].button[1].b)
+        return true;
+    else return false;
+}
+
 
 //A function to streamline error reporting in file loading
 void abort_on_error(const char *message){
@@ -74,7 +81,7 @@ void abort_on_error(const char *message){
 }
 
 void update(){
-  if(mouse_b & 1){
+  if(mouse_b & 1 && !location_clicked(0,300,0,70)){
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
@@ -83,6 +90,21 @@ void update(){
     newPixel.r = new_r;
 
     pixels.push_back(newPixel);
+  }
+  if(location_clicked(0,280,0,25)){
+    new_r=mouse_x-10;
+    if(new_r>255)new_r=255;
+    if(new_r<0)new_r=0;
+  }
+  if(location_clicked(0,280,26,45)){
+    new_g=mouse_x-10;
+    if(new_g>255)new_g=255;
+    if(new_g<0)new_g=0;
+  }
+  if(location_clicked(0,280,46,70)){
+    new_b=mouse_x-10;
+    if(new_b>255)new_b=255;
+    if(new_b<0)new_b=0;
   }
 }
 
@@ -95,19 +117,21 @@ void draw(){
     }
 
 
-    textprintf_ex(buffer,font,270,12,makecol(0,0,0),-1,"%i",new_r);
-    textprintf_ex(buffer,font,270,24,makecol(0,0,0),-1,"%i",new_g);
-    textprintf_ex(buffer,font,270,36,makecol(0,0,0),-1,"%i",new_b);
+    textprintf_ex(buffer,font,280,12,makecol(0,0,0),-1,"%i",new_r);
+    textprintf_ex(buffer,font,280,32,makecol(0,0,0),-1,"%i",new_g);
+    textprintf_ex(buffer,font,280,52,makecol(0,0,0),-1,"%i",new_b);
 
-    rectfill(buffer,10,50,265,60,makecol(new_r,new_g,new_b));
+    rectfill(buffer,10,70,275,80,makecol(new_r,new_g,new_b));
+    rect(buffer,10,70,275,80,makecol(0,0,0));
 
     draw_sprite(buffer,slider_red,10,10);
-    draw_sprite(buffer,slider_blue,10,22);
-    draw_sprite(buffer,slider_green,10,34);
+    draw_sprite(buffer,slider_green,10,30);
+    draw_sprite(buffer,slider_blue,10,50);
 
-    draw_sprite(buffer,knob,10,10);
-    draw_sprite(buffer,knob,10,22);
-    draw_sprite(buffer,knob,10,34);
+    draw_sprite(buffer,knob,10+new_r,10);
+    draw_sprite(buffer,knob,10+new_g,30);
+    draw_sprite(buffer,knob,10+new_b,50);
+
 
     draw_sprite(buffer,cursor,mouse_x,mouse_y);
 

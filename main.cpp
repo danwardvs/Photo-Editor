@@ -79,9 +79,32 @@ void abort_on_error(const char *message){
 	 allegro_message("%s.\n %s\n", message, allegro_error);
 	 exit(-1);
 }
+void fill_screen(){
+  pixels.clear();
+  for( int i = 0; i <SCREEN_W; i++){
+    for( int j = 0; j <SCREEN_H; j++){
+    pixel newPixel;
+    newPixel.x = i;
+    newPixel.y = j;
+    newPixel.b = new_b;
+    newPixel.g = new_g;
+    newPixel.r = new_r;
 
+    pixels.push_back(newPixel);
+    }
+  }
+
+
+
+}
 void update(){
+
+  if(key[KEY_F])fill_screen();
+
   if(mouse_b & 1 && !location_clicked(0,300,0,70)){
+    for( int i = 0; i <pixels.size; i++){
+        if(pixels[i].x=mouse_x && pixels[i].mouse_y)pixels[i].clear;
+    }
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
@@ -113,7 +136,7 @@ void draw(){
 
     rectfill(buffer,0,0,SCREEN_W,SCREEN_H,makecol(255,255,255));
     for( int i = 0; i <pixels.size(); i++){
-        putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
+       putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
     }
 
 

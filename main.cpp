@@ -19,6 +19,11 @@ int fps;
 int frames_done;
 int old_time;
 
+int new_r;
+int new_g;
+int new_b;
+
+
 struct pixel{
   int x;
   int y;
@@ -69,9 +74,9 @@ void update(){
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
-    newPixel.b = 0;
-    newPixel.g = 0;
-    newPixel.r = 0;
+    newPixel.b = new_b;
+    newPixel.g = new_g;
+    newPixel.r = new_r;
 
     pixels.push_back(newPixel);
   }
@@ -85,7 +90,15 @@ void draw(){
         putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
     }
     draw_sprite(buffer,cursor,mouse_x,mouse_y);
+
+    textprintf_ex(buffer,font,10,10,makecol(0,0,0),-1,"Red:%i",new_r);
+    textprintf_ex(buffer,font,10,20,makecol(0,0,0),-1,"Green:%i",new_g);
+    textprintf_ex(buffer,font,10,30,makecol(0,0,0),-1,"Blue:%i",new_b);
+
+
     draw_sprite(screen,buffer,0,0);
+
+
 }
 
 

@@ -7,6 +7,10 @@ using namespace std;
 
 BITMAP* buffer;
 BITMAP* cursor;
+BITMAP* slider_red;
+BITMAP* slider_green;
+BITMAP* slider_blue;
+BITMAP* knob;
 
 bool close_button_pressed;
 
@@ -89,12 +93,23 @@ void draw(){
     for( int i = 0; i <pixels.size(); i++){
         putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
     }
+
+
+    textprintf_ex(buffer,font,270,12,makecol(0,0,0),-1,"%i",new_r);
+    textprintf_ex(buffer,font,270,24,makecol(0,0,0),-1,"%i",new_g);
+    textprintf_ex(buffer,font,270,36,makecol(0,0,0),-1,"%i",new_b);
+
+    rectfill(buffer,10,50,265,60,makecol(new_r,new_g,new_b));
+
+    draw_sprite(buffer,slider_red,10,10);
+    draw_sprite(buffer,slider_blue,10,22);
+    draw_sprite(buffer,slider_green,10,34);
+
+    draw_sprite(buffer,knob,10,10);
+    draw_sprite(buffer,knob,10,22);
+    draw_sprite(buffer,knob,10,34);
+
     draw_sprite(buffer,cursor,mouse_x,mouse_y);
-
-    textprintf_ex(buffer,font,10,10,makecol(0,0,0),-1,"Red:%i",new_r);
-    textprintf_ex(buffer,font,10,20,makecol(0,0,0),-1,"Green:%i",new_g);
-    textprintf_ex(buffer,font,10,30,makecol(0,0,0),-1,"Blue:%i",new_b);
-
 
     draw_sprite(screen,buffer,0,0);
 
@@ -126,8 +141,16 @@ void setup(){
     LOCK_FUNCTION(close_button_handler);
     set_close_button_callback(close_button_handler);
 
-   if (!(cursor = load_bitmap("cursor.png", NULL)))
+  if (!(cursor = load_bitmap("cursor.png", NULL)))
      abort_on_error("Cannot find image cursor.png\nPlease check your files and try again");
+  if (!(slider_red = load_bitmap("slider_red.png", NULL)))
+     abort_on_error("Cannot find image slider_red.png\nPlease check your files and try again");
+  if (!(slider_blue = load_bitmap("slider_blue.png", NULL)))
+     abort_on_error("Cannot find image slider_blue.png\nPlease check your files and try again");
+  if (!(slider_green = load_bitmap("slider_green.png", NULL)))
+     abort_on_error("Cannot find image slider_green.png\nPlease check your files and try again");
+  if (!(knob = load_bitmap("knob.png", NULL)))
+     abort_on_error("Cannot find image knob.png\nPlease check your files and try again");
 }
 
 

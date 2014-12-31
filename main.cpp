@@ -13,7 +13,7 @@ BITMAP* slider_blue;
 BITMAP* knob;
 
 bool close_button_pressed;
-bool display_hud;
+bool display_hud=true;
 
 // FPS System
 volatile int ticks = 0;
@@ -115,9 +115,9 @@ void update(){
   }
 
   if(mouse_b & 1 && !location_clicked(0,300,0,70)){
-   // for( int i = 0; i <pixels.size; i++){
-   //     if(pixels[i].x=mouse_x && pixels[i].mouse_y)pixels[i].clear;
-  //  }
+   for( int i = 0; i <pixels.size(); i++){
+      if(pixels[i].x == mouse_x && pixels[i].y == mouse_y)pixels.erase(pixels.begin()+i);
+    }
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
@@ -157,6 +157,8 @@ void draw(){
       textprintf_ex(buffer,font,280,12,makecol(0,0,0),-1,"%i",new_r);
       textprintf_ex(buffer,font,280,32,makecol(0,0,0),-1,"%i",new_g);
       textprintf_ex(buffer,font,280,52,makecol(0,0,0),-1,"%i",new_b);
+
+      textprintf_ex(buffer,font,350,52,makecol(0,0,0),-1,"%i",pixels.size());
 
       rectfill(buffer,10,70,275,80,makecol(new_r,new_g,new_b));
       rect(buffer,10,70,275,80,makecol(0,0,0));

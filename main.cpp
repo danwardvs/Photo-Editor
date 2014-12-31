@@ -13,11 +13,14 @@ BITMAP* slider_blue;
 BITMAP* knob;
 
 bool close_button_pressed;
+bool display_hud;
 
 // FPS System
 volatile int ticks = 0;
 const int updates_per_second = 60;
 volatile int game_time = 0;
+
+int step;
 
 int fps;
 int frames_done;
@@ -100,11 +103,21 @@ void fill_screen(){
 void update(){
 
   if(key[KEY_F])fill_screen();
+  if(key[KEY_F11]){
+    if(display_hud && step>9){
+      display_hud=false;
+      step=0;
+    }
+    if(!display_hud && step>9){
+      display_hud=true;
+      step=0;
+    }
+  }
 
   if(mouse_b & 1 && !location_clicked(0,300,0,70)){
-    for( int i = 0; i <pixels.size; i++){
-        if(pixels[i].x=mouse_x && pixels[i].mouse_y)pixels[i].clear;
-    }
+   // for( int i = 0; i <pixels.size; i++){
+   //     if(pixels[i].x=mouse_x && pixels[i].mouse_y)pixels[i].clear;
+  //  }
     pixel newPixel;
     newPixel.x = mouse_x;
     newPixel.y = mouse_y;
@@ -129,6 +142,7 @@ void update(){
     if(new_b>255)new_b=255;
     if(new_b<0)new_b=0;
   }
+  step++;
 }
 
 void draw(){
@@ -139,22 +153,22 @@ void draw(){
        putpixel(buffer,pixels[i].x,pixels[i].y,makecol(pixels[i].r,pixels[i].g,pixels[i].b));
     }
 
+    if(display_hud){
+      textprintf_ex(buffer,font,280,12,makecol(0,0,0),-1,"%i",new_r);
+      textprintf_ex(buffer,font,280,32,makecol(0,0,0),-1,"%i",new_g);
+      textprintf_ex(buffer,font,280,52,makecol(0,0,0),-1,"%i",new_b);
 
-    textprintf_ex(buffer,font,280,12,makecol(0,0,0),-1,"%i",new_r);
-    textprintf_ex(buffer,font,280,32,makecol(0,0,0),-1,"%i",new_g);
-    textprintf_ex(buffer,font,280,52,makecol(0,0,0),-1,"%i",new_b);
+      rectfill(buffer,10,70,275,80,makecol(new_r,new_g,new_b));
+      rect(buffer,10,70,275,80,makecol(0,0,0));
 
-    rectfill(buffer,10,70,275,80,makecol(new_r,new_g,new_b));
-    rect(buffer,10,70,275,80,makecol(0,0,0));
+      draw_sprite(buffer,slider_red,10,10);
+      draw_sprite(buffer,slider_green,10,30);
+      draw_sprite(buffer,slider_blue,10,50);
 
-    draw_sprite(buffer,slider_red,10,10);
-    draw_sprite(buffer,slider_green,10,30);
-    draw_sprite(buffer,slider_blue,10,50);
-
-    draw_sprite(buffer,knob,10+new_r,10);
-    draw_sprite(buffer,knob,10+new_g,30);
-    draw_sprite(buffer,knob,10+new_b,50);
-
+      draw_sprite(buffer,knob,10+new_r,10);
+      draw_sprite(buffer,knob,10+new_g,30);
+      draw_sprite(buffer,knob,10+new_b,50);
+    }
 
     draw_sprite(buffer,cursor,mouse_x,mouse_y);
 

@@ -114,7 +114,7 @@ void update(){
     }
   }
 
-  if(mouse_b & 1 && !location_clicked(0,300,0,70)){
+  if(mouse_b & 1 && (!location_clicked(0,300,0,70) || !display_hud)){
    for( int i = 0; i <pixels.size(); i++){
       if(pixels[i].x == mouse_x && pixels[i].y == mouse_y)pixels.erase(pixels.begin()+i);
     }
@@ -161,7 +161,7 @@ void draw(){
       textprintf_ex(buffer,font,350,52,makecol(0,0,0),-1,"%i",pixels.size());
 
       rectfill(buffer,10,70,275,80,makecol(new_r,new_g,new_b));
-      rect(buffer,10,70,275,80,makecol(0,0,0));
+      rect(buffer,10,70,275,80,makecol(255-new_b,255-new_r,255-new_g));
 
       draw_sprite(buffer,slider_red,10,10);
       draw_sprite(buffer,slider_green,10,30);

@@ -3,6 +3,9 @@
 #include<time.h>
 #include<vector>
 
+#define PIXEL 0
+#define SQUARE 1
+
 using namespace std;
 
 BITMAP* buffer;
@@ -21,6 +24,8 @@ const int updates_per_second = 60;
 volatile int game_time = 0;
 
 int step;
+
+int tool=SQUARE;
 
 int fps;
 int frames_done;
@@ -82,6 +87,20 @@ void abort_on_error(const char *message){
 	 allegro_message("%s.\n %s\n", message, allegro_error);
 	 exit(-1);
 }
+void create_pixel(int newX, int newY){
+    for( int i = 0; i <pixels.size(); i++){
+        if(pixels[i].x == newX && pixels[i].y == newY)pixels.erase(pixels.begin()+i);
+    }
+    pixel newPixel;
+    newPixel.x = newX;
+    newPixel.y = newY;
+    newPixel.b = new_b;
+    newPixel.g = new_g;
+    newPixel.r = new_r;
+
+    pixels.push_back(newPixel);
+}
+
 void fill_screen(){
   pixels.clear();
   for( int i = 0; i <SCREEN_W; i++){
@@ -96,9 +115,6 @@ void fill_screen(){
     pixels.push_back(newPixel);
     }
   }
-
-
-
 }
 void update(){
 
@@ -113,19 +129,30 @@ void update(){
       step=0;
     }
   }
+  //Click on toolbox
+  if(location_clicked(SCREEN_W-195,SCREEN_W-165,5,35)){
+    tool=PIXEL;
+  }
+  if(location_clicked(SCREEN_W-155,SCREEN_W-125,5,35)){
+    tool=SQUARE;
+  }
 
-  if(mouse_b & 1 && (!location_clicked(0,300,0,70) || !display_hud)){
-   for( int i = 0; i <pixels.size(); i++){
-      if(pixels[i].x == mouse_x && pixels[i].y == mouse_y)pixels.erase(pixels.begin()+i);
+  if(mouse_b & 1 && ((!location_clicked(0,300,0,70) && !location_clicked(SCREEN_W-200,SCREEN_W,0,40)) || !display_hud)){
+    if(tool==PIXEL){
+      create_pixel(mouse_x,mouse_y);
     }
-    pixel newPixel;
-    newPixel.x = mouse_x;
-    newPixel.y = mouse_y;
-    newPixel.b = new_b;
-    newPixel.g = new_g;
-    newPixel.r = new_r;
+    if(tool==SQUARE){
+      create_pixel(mouse_x-1,mouse_y-1);
+      create_pixel(mouse_x,mouse_y-1);
+      create_pixel(mouse_x+1,mouse_y-1);
+      create_pixel(mouse_x+1,mouse_y);
+      create_pixel(mouse_x-1,mouse_y);
+      create_pixel(mouse_x,mouse_y);
+      create_pixel(mouse_x-1,mouse_y+1);
+      create_pixel(mouse_x,mouse_y+1);
+      create_pixel(mouse_x+1,mouse_y+1);
+    }
 
-    pixels.push_back(newPixel);
   }
   if(location_clicked(0,280,0,25)){
     new_r=mouse_x-10;
@@ -170,6 +197,21 @@ void draw(){
       draw_sprite(buffer,knob,10+new_r,10);
       draw_sprite(buffer,knob,10+new_g,30);
       draw_sprite(buffer,knob,10+new_b,50);
+
+      //Toolbox
+      rectfill(buffer,SCREEN_W-200,0,SCREEN_W,40,makecol(230,230,230));
+      if(tool==PIXEL)rectfill(buffer,SCREEN_W-195,5,SCREEN_W-165,35,makecol(0,255,0));
+      else rectfill(buffer,SCREEN_W-195,5,SCREEN_W-165,35,makecol(255,255,255));
+
+      if(tool==PIXEL)rectfill(buffer,SCREEN_W-195,5,SCREEN_W-165,35,makecol(0,255,0));
+      else rectfill(buffer,SCREEN_W-195,5,SCREEN_W-165,35,makecol(255,255,255));
+
+      if(tool==SQUARE)rectfill(buffer,SCREEN_W-155,5,SCREEN_W-125,35,makecol(0,255,0));
+      else rectfill(buffer,SCREEN_W-155,5,SCREEN_W-125,35,makecol(255,255,255));
+
+
+      putpixel(buffer,SCREEN_W-180,20,makecol(0,0,0));
+      rectfill(buffer,SCREEN_W-140,20,SCREEN_W-143,23,makecol(0,0,0));
     }
 
     draw_sprite(buffer,cursor,mouse_x,mouse_y);
